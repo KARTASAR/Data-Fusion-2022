@@ -1,27 +1,30 @@
-# data-fusion2022-open-solution
-Открытое решение для [Data Fusion Contest 2022](https://ods.ai/tracks/data-fusion-2022-competitions)
+# Data Fusion 2022 Contest
 
-* Результаты на публичном лидерборде 
+8th place solution for [Data Fusion 2022 Contest](https://ods.ai/competitions/data-fusion2022-main-challenge).
 
-| Task | ROC-AUC | R1 | MRR@100 | Precision@100 | Current place (15.05) |
-| :---: | :---: | :---: | :---: | :---: | :---: |
-| Education | 0,788535 |  |  |  | ***31*** |
-| Puzzle |  | 0,0425695056 | 0,0235027126 | 0,2255448555 | ***20*** |
-| Matching |  |  | Queued |  | ```¯\_(ツ)_/¯``` |
+| Rank       | Public      | Private      |
+|------------|-------------|--------------|
+| Matching   | 6           | 8            |
 
-* [education_submit](submissions/education_submit.csv) - файл для отправки в задачу Education
-* [puzzle_submit](submissions/puzzle_submit.csv) - файл для отправки в задачу Puzzle. Считался 30 минут
-* ~~[matching_submit](submissions/matching_submit) - папка с архивом для отправки в задачу Matching~~
 
-### Short description:
-Решение основано на подходе из [Catboost baseline](https://ods.ai/tracks/data-fusion-2022-competitions/competitions/data-fusion2022-main-challenge/Baselines). Оно использует нейросети и градиентный бустинг. 
-* [data-preprocessing](data-preprocessing.ipynb) - предварительная обработка данных, уменьшение объёма используемой памяти
-* [making-embeddings](making-embeddings.ipynb) - создание признаков на основе совершённых транзакций и посещённых страниц
-* [fitting-lifestream](fitting-lifestream.ipynb) - обучение pytorch-lifestream, получение дополнительного набора эмбеддингов
-* [education-solution](education-solution.ipynb) - обучение catboost, получение предсказаний для задачи Education
-* [puzzle-solution](puzzle-solution.ipynb) - обучение catboost, получение предсказаний для задачи Puzzle
+## Used technology
+![Python](https://img.shields.io/badge/Python-FFD43B?style=for-the-badge&logo=python&logoColor=blue)
+![Jupyter](https://img.shields.io/badge/Jupyter-F37626.svg?&style=for-the-badge&logo=Jupyter&logoColor=white)
+![Numpy](https://img.shields.io/badge/Numpy-777BB4?style=for-the-badge&logo=numpy&logoColor=white)
+![Pandas](https://img.shields.io/badge/Pandas-2C2D72?style=for-the-badge&logo=pandas&logoColor=white)
+![scikit_learn](https://img.shields.io/badge/scikit_learn-F7931E?style=for-the-badge&logo=scikit-learn&logoColor=white)
 
-### Requirements:
-* Решение использует библиотеку [pytorch-lifestream](https://github.com/dllllb/pytorch-lifestream). Для её работы необходим Python 3.8 или новее. Используемая [версия](pytorch-lifestream-main)  находится в репозитории. ```!pip install ./pytorch-lifestream-main```
-* [dockerfile](dockerfile) - файл для построения docker image c Python 3.8 и [необходимыми библиотеками](requirements.txt)
-* Для запуска локально: 32Gb Ram, GPU
+## Problem solving
+
+1. Before analyzing transactional data, we need to create useful features based on the all available data.
+This will allow you to get more information in the context of various measurements in the future (such as time of day, days of the week, etc.), as well as use the obtained features to train machine learning models.
+
+2. Training: 
+   - CatBoostRanker with YetiRank loss with 9000 iterations,
+   - Ensembling of 2 catboost models with different parameters.
+
+
+## Data
+1. General data for all tasks in a tabular `.csv` format: `transactions.zip, clicstream.zip` and the target variable `train_matching.csv`
+2. Common accompanying data for all tasks in tabular `.csv` format: `mcc_codes.csv`, `click_categories.csv` and `currency_rk.csv`
+3. Baselines and examples of solutions for a container Matching problem: random solution `sample_submission.zip` and `baseline_catboost.zip` with an example of a solution based on the catboost library using GPU
